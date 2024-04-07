@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import inquirer from "inquirer";
+import chalk from "chalk";
 let myBalance = 10000;
 let myPin = 3406;
 let pinAnswer = await inquirer.prompt([
@@ -10,13 +11,13 @@ let pinAnswer = await inquirer.prompt([
     },
 ]);
 if (pinAnswer.pin === myPin) {
-    console.log("Correct pin!!");
+    console.log(chalk.green("Correct pin!!"));
     let operationAns = await inquirer.prompt([
         {
             name: "Operation",
             message: "Please select option",
             type: "list",
-            choices: ["Withdraw", "Check Balance", "Fast Cash"], // Added fast cash option
+            choices: ["Withdraw", "Check Balance", "Fast Cash", "Exit"], // Added fast cash and exit option
         },
     ]);
     if (operationAns.Operation === "Withdraw") {
@@ -28,15 +29,15 @@ if (pinAnswer.pin === myPin) {
             },
         ]);
         if (amountAns.amount > myBalance) {
-            console.log("Insufficient balance"); // If amount is greater than the actual balance then program will show insufficient balance
+            console.log(chalk.red("Insufficient balance")); // If amount is greater than the actual balance then program will show insufficient balance
         }
         else {
             myBalance -= amountAns.amount;
-            console.log("Your remaining balance is: " + myBalance);
+            console.log(chalk.green("Your remaining balance is: ") + myBalance);
         }
     }
     else if (operationAns.Operation === "Check Balance") {
-        console.log(`Your balance is: ${myBalance}`); // Template Literals
+        console.log(chalk.green(`Your balance is: ${myBalance}`)); // Template Literals
     }
     else if (operationAns.Operation === "Fast Cash") {
         let fastCashOptions = await inquirer.prompt([
@@ -48,9 +49,13 @@ if (pinAnswer.pin === myPin) {
             },
         ]);
         myBalance -= fastCashOptions.amount;
-        console.log("Your remaining balance is: " + myBalance);
+        console.log(chalk.green("Your remaining balance is: ") + myBalance);
+    }
+    else if (operationAns.Operation === "Exit") {
+        console.log(chalk.yellow("Thank you for using the ATM. Goodbye!"));
+        process.exit(); // Exit the program
     }
 }
 else {
-    console.log("Incorrect pin");
+    console.log(chalk.red("Incorrect pin"));
 }
